@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>حرب الفضاء - تحدي كرة القدم</title>
+    <meta name="theme-color" content="#050814">
+    <link rel="manifest" href="manifest.json">
+    <title>حرب الفضاء - تحدي المعرفة</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
 
@@ -175,8 +177,10 @@
         .ui-layer::-webkit-scrollbar { width: 5px; } .ui-layer::-webkit-scrollbar-thumb { background: var(--laser-color); border-radius: 5px; }
 
         .top-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .goal-wrapper { display: flex; align-items: center; gap: 8px; }
         .q-counter { font-size: 0.95rem; color: #fff; font-weight: bold; margin: 0; background: rgba(0, 229, 255, 0.3); padding: 4px 15px; border-radius: 5px; border: 1px solid var(--laser-color); transition: all 0.3s;}
-        
+        .difficulty-badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 5px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-weight: bold; display: flex; align-items: center; gap: 4px; transition: all 0.3s;}
+
         .shield-btn { background: #004d98; border: 1px solid #00aaff; padding: 6px 15px; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-family: 'Tajawal', sans-serif;}
         .shield-btn:disabled { background: #333; color: #777; cursor: default; border-color: #555;}
         .shield-btn.active-glow { box-shadow: 0 0 15px #00aaff; border: 1px solid #fff; background: #0077ff;}
@@ -185,7 +189,7 @@
         .timer-bar { height: 100%; width: 100%; background: var(--laser-color); transition: width 1s linear, background 0.3s; }
         .timer-warning { background: var(--damage-color) !important; box-shadow: 0 0 10px var(--damage-color); }
 
-        h2 { margin: 0 0 20px 0; color: #fff; font-size: 1rem; line-height: 1.5; }
+        h2 { margin: 0 0 20px 0; color: #fff; font-size: 1.1rem; line-height: 1.5; }
         
         .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
         @media (max-width: 480px) { .options { grid-template-columns: 1fr; } }
@@ -242,7 +246,6 @@
         <div class="hud-badge streak-hud" id="streak-badge">🔥 كومبو: 2</div>
     </div>
 
-    <!-- ساحة الفضاء -->
     <div class="space-arena">
         <div class="asteroid-wrap">
             <div class="boss-hp-wrapper" id="boss-hp-wrapper">
@@ -256,11 +259,13 @@
         </div>
     </div>
 
-    <!-- واجهة الأسئلة -->
     <div class="ui-layer" id="ui-container">
         <div id="quiz-content">
             <div class="top-tools">
-                <div class="q-counter" id="q-counter">الهدف 1 / 7</div>
+                <div class="goal-wrapper">
+                    <div class="q-counter" id="q-counter">الهدف 1 / 7</div>
+                    <div class="difficulty-badge" id="difficulty-badge">🟡 متوسط</div>
+                </div>
                 <button class="shield-btn" id="shield-btn" onclick="activateShield()">🛡️ تفعيل الدرع (1)</button>
             </div>
             
@@ -282,7 +287,6 @@
         </div>
     </div>
 
-    <!-- شاشات النهاية -->
     <div id="completion-screen">
         <div class="trophy" id="final-trophy">🎖️</div>
         <h2 id="final-praise" style="font-size: 2rem; margin: 15px 0;">جاري تقييم المهمة...</h2>
@@ -301,6 +305,13 @@
     </div>
 
     <script>
+        // تسجيل Service Worker لتحويل اللعبة إلى PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW Registered!', reg)).catch(err => console.log('SW Registration Failed', err));
+            });
+        }
+
         let audioCtx = null;
         
         function initAudio() {
@@ -365,18 +376,17 @@
             }
         }
 
-        // 10 أسئلة كرة قدم
         let quizData = [
-            { q: "من هو اللاعب الوحيد الذي فاز بلقب دوري أبطال أوروبا مع 3 أندية مختلفة؟", options: ["كريستيانو رونالدو", "كلارنس سيدورف", "صامويل إيتو", "أندريس إنييستا"], correct: 1, explanation: "كلارنس سيدورف فاز بالبطولة مع أياكس، ريال مدريد، وميلان." },
-            { q: "أي منتخب أفريقي كان أول من يصل إلى الدور ربع النهائي في تاريخ كأس العالم؟", options: ["السنغال", "غانا", "الكاميرون", "نيجيريا"], correct: 2, explanation: "الكاميرون كانت أول دولة أفريقية تصل لربع النهائي في مونديال 1990." },
-            { q: "من هو اللاعب الذي سجل أسرع هدف في تاريخ كأس العالم (بعد 11 ثانية)؟", options: ["هاكان شوكور", "رونالدو البرازيلي", "ميروسلاف كلوزه", "دييغو مارادونا"], correct: 0, explanation: "التركي هاكان شوكور سجل أسرع هدف في مونديال 2002 ضد كوريا الجنوبية." },
-            { q: "ما هو أقدم نادي كرة قدم في العالم لا يزال يلعب حتى اليوم؟", options: ["أستون فيلا", "نوتينغهام فورست", "شيفيلد إف سي", "إيفرتون"], correct: 2, explanation: "نادي شيفيلد إف سي (Sheffield FC) تأسس عام 1857 وهو أقدم نادي في التاريخ." },
-            { q: "في أي عام أقيمت أول نسخة من بطولة كأس العالم لكرة القدم؟", options: ["1924", "1930", "1934", "1950"], correct: 1, explanation: "أول بطولة أقيمت في الأوروغواي عام 1930 وفازت بها الدولة المضيفة." },
-            { q: "من هو الهداف التاريخي لبطولات كأس العالم برصيد 16 هدفاً؟", options: ["رونالدو البرازيلي", "ليونيل ميسي", "ميروسلاف كلوزه", "بيليه"], correct: 2, explanation: "الألماني ميروسلاف كلوزه هو الهداف التاريخي لكأس العالم بـ 16 هدفاً." },
-            { q: "من هو حارس المرمى الوحيد في التاريخ الذي فاز بجائزة الكرة الذهبية (البالون دور)؟", options: ["أوليفر كان", "جيانلويجي بوفون", "مانويل نوير", "ليف ياشين"], correct: 3, explanation: "الحارس السوفيتي ليف ياشين الملقب بـ (العنكبوت الأسود) فاز بها عام 1963." },
-            { q: "ما هي الدولة التي فازت بأول نسخة من بطولة كأس أمم أوروبا (اليورو) عام 1960؟", options: ["إسبانيا", "إيطاليا", "ألمانيا الغربية", "الاتحاد السوفيتي"], correct: 3, explanation: "الاتحاد السوفيتي فاز بأول بطولة يورو بعد تغلبه على يوغوسلافيا في النهائي." },
-            { q: "من هو المدرب الذي حقق أكبر عدد من ألقاب دوري أبطال أوروبا كمدرب في التاريخ؟", options: ["بيب غوارديولا", "كارلو أنشيلوتي", "زين الدين زيدان", "جوزيه مورينيو"], correct: 1, explanation: "كارلو أنشيلوتي هو المدرب الأكثر تتويجاً بالبطولة في تاريخها." },
-            { q: "أي نادي إنجليزي فاز بدوري أبطال أوروبا مرتين متتاليتين في عامي 1979 و 1980؟", options: ["نوتينغهام فورست", "ليفربول", "مانشستر يونايتد", "أستون فيلا"], correct: 0, explanation: "نوتينغهام فورست فاز بالبطولة مرتين متتاليتين في إنجاز تاريخي فريد." }
+            { q: "ما هو أطول نهر في العالم؟", options: ["نهر الأمازون", "نهر النيل", "نهر المسيسيبي", "نهر يانغتسي"], correct: 1, explanation: "نهر النيل هو الأطول عالمياً، حيث يبلغ طوله حوالي 6,650 كم.", difficulty: "متوسط" },
+            { q: "ما هو العنصر الكيميائي الذي يرمز له بالحرف 'W'؟", options: ["التنجستن", "اليورانيوم", "الزنك", "البلاتين"], correct: 0, explanation: "التنجستن (Tungsten) رمزه الكيميائي W ويتميز بأعلى درجة انصهار بين المعادن.", difficulty: "صعب" },
+            { q: "من هو مؤلف رواية 'مئة عام من العزلة'؟", options: ["نجيب محفوظ", "فيكتور هوغو", "غابرييل غارثيا ماركيز", "فيودور دوستويفسكي"], correct: 2, explanation: "الكاتب الكولومبي غابرييل غارثيا ماركيز الحائز على جائزة نوبل.", difficulty: "متوسط" },
+            { q: "ما هي عاصمة كازاخستان؟", options: ["طشقند", "أستانا", "ألماتي", "باكو"], correct: 1, explanation: "أستانا هي عاصمة كازاخستان.", difficulty: "صعب" },
+            { q: "ما هو الغاز الأكثر وفرة في الغلاف الجوي للأرض؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "الهيدروجين", "النيتروجين"], correct: 3, explanation: "النيتروجين يشكل حوالي 78% من الغلاف الجوي للأرض.", difficulty: "متوسط" },
+            { q: "في أي عام تم تأسيس منظمة الأمم المتحدة؟", options: ["1919", "1939", "1945", "1950"], correct: 2, explanation: "تأسست الأمم المتحدة في 24 أكتوبر 1945 بعد الحرب العالمية الثانية.", difficulty: "صعب" },
+            { q: "أي من هذه الكواكب يعتبر الكوكب الأبرد في مجموعتنا الشمسية؟", options: ["المشتري", "أورانوس", "زحل", "المريخ"], correct: 1, explanation: "أورانوس هو الكوكب الأبرد، حيث تصل درجة حرارته إلى -224 درجة مئوية.", difficulty: "صعب" },
+            { q: "من هو العالم الذي اكتشف البنسلين؟", options: ["ماري كوري", "لويس باستير", "ألكسندر فلمنج", "ألبرت أينشتاين"], correct: 2, explanation: "اكتشف ألكسندر فلمنج البنسلين عام 1928.", difficulty: "متوسط" },
+            { q: "ما هو المعدن الوحيد الذي يكون في حالة سائلة في درجة حرارة الغرفة؟", options: ["الحديد", "النحاس", "الزئبق", "الفضة"], correct: 2, explanation: "الزئبق هو المعدن الوحيد السائل في درجة حرارة الغرفة القياسية.", difficulty: "متوسط" },
+            { q: "ما هي أصغر دولة في العالم من حيث المساحة؟", options: ["موناكو", "سان مارينو", "ناورو", "الفاتيكان"], correct: 3, explanation: "دولة مدينة الفاتيكان هي الأصغر بمساحة تبلغ حوالي 0.44 كيلومتر مربع.", difficulty: "صعب" }
         ];
 
         const happyReplies = ["إصابة دقيقة! 🎯", "تم تدمير الهدف! 💥", "ليزر قاتل! 🔫", "عاش الكابتن! 🚀", "المنطقة آمنة! ✨"];
@@ -388,7 +398,7 @@
         
         let currentBossHits = 0;
 
-        let highScore = localStorage.getItem('spaceQuizFootballRPG') || 0;
+        let highScore = localStorage.getItem('spaceQuizRPG') || 0;
         document.getElementById('highscore-badge').innerText = `🎖️ أفضل مهمة: ${highScore}`;
 
         const bubble = document.getElementById('speech-bubble'); const streakBadge = document.getElementById('streak-badge');
@@ -400,7 +410,7 @@
         const damageOverlay = document.getElementById('damage-overlay'); const starsBg = document.getElementById('stars-bg');
         const spaceship = document.getElementById('spaceship'); const shieldBtn = document.getElementById('shield-btn');
         const bossHpWrapper = document.getElementById('boss-hp-wrapper'); const bossHpFill = document.getElementById('boss-hp-fill');
-        const qCounter = document.getElementById('q-counter');
+        const qCounter = document.getElementById('q-counter'); const diffBadge = document.getElementById('difficulty-badge');
 
         function activateShield() {
             if (isShieldAvailable && !isShieldActive) {
@@ -459,6 +469,7 @@
             laser.classList.remove('laser-shoot', 'super-laser');
             starsBg.classList.remove('warp-speed');
 
+            const current = quizData[currentQ];
             let isBossPhase = (currentQ >= quizData.length - 3);
 
             if (isBossPhase) {
@@ -467,15 +478,25 @@
                 bossHpWrapper.classList.add('show');
                 let strikeNum = currentQ - (quizData.length - 3) + 1;
                 qCounter.innerText = `معركة الزعيم: ضربة ${strikeNum} من 3`;
+                
+                diffBadge.innerHTML = `🔥 خطير`;
+                diffBadge.style.color = "#ff2a2a";
+                diffBadge.style.borderColor = "rgba(255, 42, 42, 0.5)";
+                diffBadge.style.background = "rgba(255, 42, 42, 0.15)";
             } else {
                 asteroid.innerText = "🪨"; 
                 asteroid.classList.remove('boss-ufo');
                 bossHpWrapper.classList.remove('show');
                 qCounter.innerText = `الهدف ${currentQ + 1} / ${quizData.length - 3}`;
+                
+                let diffColor = current.difficulty === 'صعب' ? '🔴' : '🟡';
+                diffBadge.innerHTML = `${diffColor} ${current.difficulty}`;
+                diffBadge.style.color = "#fff";
+                diffBadge.style.borderColor = "rgba(255, 255, 255, 0.2)";
+                diffBadge.style.background = "rgba(255, 255, 255, 0.05)";
             }
 
-            const current = quizData[currentQ];
-            qText.innerText = current.q; 
+            qText.innerText = current.q;
             
             optsContainer.innerHTML = '';
             expBox.style.display = 'none'; bubble.style.display = 'none'; bubble.style.opacity = '0';
@@ -612,32 +633,32 @@
             damageOverlay.classList.remove('active'); starsBg.classList.remove('warp-speed');
             spaceship.classList.remove('shield-aura'); bossHpWrapper.classList.remove('show');
             
-            if (score > highScore) { highScore = score; localStorage.setItem('spaceQuizFootballRPG', highScore); document.getElementById('highscore-badge').innerText = `🎖️ أفضل مهمة: ${highScore}`; }
+            if (score > highScore) { highScore = score; localStorage.setItem('spaceQuizRPG', highScore); document.getElementById('highscore-badge').innerText = `🎖️ أفضل مهمة: ${highScore}`; }
 
             const praiseText = document.getElementById('final-praise'); const descText = document.getElementById('final-desc');
             const finalScoreObj = document.getElementById('final-score'); const trophy = document.getElementById('final-trophy');
 
             if (currentBossHits === 3 && score >= 10) {
-                praiseText.innerText = "الكرة الذهبية الفضائية 🌕🚀";
+                praiseText.innerText = "عقل المجرة العظيم 🧠🌌";
                 praiseText.style.color = "#ffd700";
-                descText.innerText = "أنت أسطورة كروية بالمجرة! دمرت الزعيم، وحققت نقاط خيالية.";
-                trophy.innerText = "🏆";
+                descText.innerText = "أنت موسوعة كونية! دمرت الزعيم وأثبتّ أن ثقافتك تتجاوز حدود مجرتنا.";
+                trophy.innerText = "🛸";
                 playSound('laser'); 
             } else if (currentBossHits === 3) {
-                praiseText.innerText = "بطل الكأس الكوني 🏆🛸";
+                praiseText.innerText = "قائد أسطول المعرفة 🚀✨";
                 praiseText.style.color = "var(--laser-color)";
-                descText.innerText = "عاشت ايدك! فجرت سفينة الأم وحميت الكوكب.";
-                trophy.innerText = "🚀";
+                descText.innerText = "عاشت ايدك! فجرت سفينة الأم وحميت الكوكب بفضل ذكائك.";
+                trophy.innerText = "🎖️";
                 playSound('laser');
             } else if (score >= 6) {
-                praiseText.innerText = "الحذاء الذهبي الكوني 👟⭐";
+                praiseText.innerText = "مستكشف الفضاء 🔭🌠";
                 praiseText.style.color = "#00ff9d";
-                descText.innerText = "أدائك حلو بس الزعيم فلت منك! يحتاجلك تركيز كروي بالنهائيات.";
-                trophy.innerText = "👟";
+                descText.innerText = "أدائك حلو بس الزعيم فلت منك! تحتاج تزيد رصيدك المعرفي للمواجهة القادمة.";
+                trophy.innerText = "☄️";
             } else {
-                praiseText.innerText = "دكة بدلاء المريخ 🪑🔴";
+                praiseText.innerText = "ضائع في الثقب الأسود 🕳️🌑";
                 praiseText.style.color = "var(--damage-color)";
-                descText.innerText = "أدائك ضعيف والسفينة اتهشمت.. روح راجع أرقام الطوبة وارجع العب.";
+                descText.innerText = "أدائك ضعيف والسفينة اتهشمت.. راجع معلوماتك العامة وارجع العب.";
                 trophy.innerText = "☠️";
                 playSound('explosion');
             }
