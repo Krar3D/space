@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#050814">
     <link rel="manifest" href="manifest.json">
-    <title>حرب الفضاء - تحدي المعرفة</title>
+    <title>حرب الفضاء - تحدي الاقتصاد</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
 
@@ -263,7 +263,7 @@
         <div id="quiz-content">
             <div class="top-tools">
                 <div class="goal-wrapper">
-                    <div class="q-counter" id="q-counter">الهدف 1 / 7</div>
+                    <div class="q-counter" id="q-counter">الهدف 1 / 3</div>
                     <div class="difficulty-badge" id="difficulty-badge">🟡 متوسط</div>
                 </div>
                 <button class="shield-btn" id="shield-btn" onclick="activateShield()">🛡️ تفعيل الدرع (1)</button>
@@ -305,7 +305,6 @@
     </div>
 
     <script>
-        // تسجيل Service Worker لتحويل اللعبة إلى PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then(reg => console.log('SW Registered!', reg)).catch(err => console.log('SW Registration Failed', err));
@@ -376,17 +375,14 @@
             }
         }
 
+        // الأسئلة الـ 6 المأخوذة من صور الامتحان
         let quizData = [
-            { q: "ما هو أطول نهر في العالم؟", options: ["نهر الأمازون", "نهر النيل", "نهر المسيسيبي", "نهر يانغتسي"], correct: 1, explanation: "نهر النيل هو الأطول عالمياً، حيث يبلغ طوله حوالي 6,650 كم.", difficulty: "متوسط" },
-            { q: "ما هو العنصر الكيميائي الذي يرمز له بالحرف 'W'؟", options: ["التنجستن", "اليورانيوم", "الزنك", "البلاتين"], correct: 0, explanation: "التنجستن (Tungsten) رمزه الكيميائي W ويتميز بأعلى درجة انصهار بين المعادن.", difficulty: "صعب" },
-            { q: "من هو مؤلف رواية 'مئة عام من العزلة'؟", options: ["نجيب محفوظ", "فيكتور هوغو", "غابرييل غارثيا ماركيز", "فيودور دوستويفسكي"], correct: 2, explanation: "الكاتب الكولومبي غابرييل غارثيا ماركيز الحائز على جائزة نوبل.", difficulty: "متوسط" },
-            { q: "ما هي عاصمة كازاخستان؟", options: ["طشقند", "أستانا", "ألماتي", "باكو"], correct: 1, explanation: "أستانا هي عاصمة كازاخستان.", difficulty: "صعب" },
-            { q: "ما هو الغاز الأكثر وفرة في الغلاف الجوي للأرض؟", options: ["الأكسجين", "ثاني أكسيد الكربون", "الهيدروجين", "النيتروجين"], correct: 3, explanation: "النيتروجين يشكل حوالي 78% من الغلاف الجوي للأرض.", difficulty: "متوسط" },
-            { q: "في أي عام تم تأسيس منظمة الأمم المتحدة؟", options: ["1919", "1939", "1945", "1950"], correct: 2, explanation: "تأسست الأمم المتحدة في 24 أكتوبر 1945 بعد الحرب العالمية الثانية.", difficulty: "صعب" },
-            { q: "أي من هذه الكواكب يعتبر الكوكب الأبرد في مجموعتنا الشمسية؟", options: ["المشتري", "أورانوس", "زحل", "المريخ"], correct: 1, explanation: "أورانوس هو الكوكب الأبرد، حيث تصل درجة حرارته إلى -224 درجة مئوية.", difficulty: "صعب" },
-            { q: "من هو العالم الذي اكتشف البنسلين؟", options: ["ماري كوري", "لويس باستير", "ألكسندر فلمنج", "ألبرت أينشتاين"], correct: 2, explanation: "اكتشف ألكسندر فلمنج البنسلين عام 1928.", difficulty: "متوسط" },
-            { q: "ما هو المعدن الوحيد الذي يكون في حالة سائلة في درجة حرارة الغرفة؟", options: ["الحديد", "النحاس", "الزئبق", "الفضة"], correct: 2, explanation: "الزئبق هو المعدن الوحيد السائل في درجة حرارة الغرفة القياسية.", difficulty: "متوسط" },
-            { q: "ما هي أصغر دولة في العالم من حيث المساحة؟", options: ["موناكو", "سان مارينو", "ناورو", "الفاتيكان"], correct: 3, explanation: "دولة مدينة الفاتيكان هي الأصغر بمساحة تبلغ حوالي 0.44 كيلومتر مربع.", difficulty: "صعب" }
+            { q: "يتحقق التوازن للمنتج عندما:", options: ["ميل منحنى الناتج يساوي ميل خط التكاليف", "MPL / MPK = W / r", "خط التكاليف يمس منحنى الناتج المتساوي", "كل ما سبق."], correct: 3, explanation: "التوازن يتحقق عند نقطة التماس حيث تتساوى الميول هندسياً ورياضياً.", difficulty: "صعب" },
+            { q: "إذا كان سعر العمل فقط متغيراً، فأن خط الإنتاج (خط التوسع) يكون:", options: ["مستقيم", "عمودي", "أفقي", "متعرج"], correct: 3, explanation: "تغير سعر أحد عناصر الإنتاج يؤدي إلى تغير النسبة المثلى لمزج العناصر، مما يجعل مسار التوسع غير مستقيم (متعرج).", difficulty: "متوسط" },
+            { q: "التكاليف التي تدفعها المنشأة فعلياً مقابل خدمات عناصر الإنتاج (مثل الأجور والمواد الخام) تُسمى:", options: ["تكاليف ضمنية.", "تكاليف الفرصة البديلة.", "تكاليف صريحة.", "تكاليف غير ملموسة."], correct: 2, explanation: "التكاليف الصريحة هي المدفوعات النقدية الفعلية التي تدفعها المنشأة لموردي عناصر الإنتاج.", difficulty: "متوسط" },
+            { q: "نقطة التوازن (التماس) التي تمثل أقل تكلفة لإنتاج كمية معينة، تتحقق عندما:", options: ["يتقاطع خط الكلفة مع منحنى الناتج المتساوي في نقطتين.", "يقطع خط الكلفة محور العمل فقط.", "يلامس خط الكلفة منحنى الناتج المتساوي.", "يكون خط الكلفة أفقياً تماماً."], correct: 2, explanation: "عند نقطة التماس (المماسة) يكون ميل خط التكلفة مساوياً لميل منحنى الناتج المتساوي، وهي نقطة تدنية التكاليف.", difficulty: "متوسط" },
+            { q: "إذا كانت دالة الإنتاج غير متجانسة ونسب بين عنصري العمل وراس المال مضطربة، فأن خط الإنتاج (خط التوسع) يكون:", options: ["مستقيم", "عمودي", "أفقي", "متعرج"], correct: 3, explanation: "في دوال الإنتاج غير المتجانسة، تتغير النسبة بين العمل ورأس المال مع زيادة الإنتاج، مما يجعل خط التوسع متعرجاً أو منحنياً.", difficulty: "صعب" },
+            { q: "إذا استخدم صاحب المصنع مستودع مملوك له لتخزين بضاعته بدلاً من تأجيره، فإن الإيجار الضائع يُعتبر:", options: ["تكلفة صريحة.", "تكلفة ضمنية.", "ربحاً صافياً للمؤسسة.", "مصاريف إدارية."], correct: 1, explanation: "التكلفة الضمنية (أو تكلفة الفرصة البديلة) تمثل العائد الذي يضحي به المالك عند استخدام موارده الذاتية بدلاً من تأجيرها للغير.", difficulty: "متوسط" }
         ];
 
         const happyReplies = ["إصابة دقيقة! 🎯", "تم تدمير الهدف! 💥", "ليزر قاتل! 🔫", "عاش الكابتن! 🚀", "المنطقة آمنة! ✨"];
@@ -638,27 +634,27 @@
             const praiseText = document.getElementById('final-praise'); const descText = document.getElementById('final-desc');
             const finalScoreObj = document.getElementById('final-score'); const trophy = document.getElementById('final-trophy');
 
-            if (currentBossHits === 3 && score >= 10) {
-                praiseText.innerText = "عقل المجرة العظيم 🧠🌌";
+            if (currentBossHits === 3 && score >= 6) {
+                praiseText.innerText = "عقل المجرة الاقتصادي 🧠🌌";
                 praiseText.style.color = "#ffd700";
-                descText.innerText = "أنت موسوعة كونية! دمرت الزعيم وأثبتّ أن ثقافتك تتجاوز حدود مجرتنا.";
+                descText.innerText = "دمرت الزعيم وأثبتّ أنك فاهم مبادئ الإنتاج والتكاليف بشكل ممتاز.";
                 trophy.innerText = "🛸";
                 playSound('laser'); 
             } else if (currentBossHits === 3) {
-                praiseText.innerText = "قائد أسطول المعرفة 🚀✨";
+                praiseText.innerText = "بطل الاقتصاد 🚀✨";
                 praiseText.style.color = "var(--laser-color)";
-                descText.innerText = "عاشت ايدك! فجرت سفينة الأم وحميت الكوكب بفضل ذكائك.";
+                descText.innerText = "عاشت ايدك! فجرت سفينة الأم وحميت الكوكب بفضل إجاباتك.";
                 trophy.innerText = "🎖️";
                 playSound('laser');
-            } else if (score >= 6) {
-                praiseText.innerText = "مستكشف الفضاء 🔭🌠";
+            } else if (score >= 3) {
+                praiseText.innerText = "مستكشف التكاليف 🔭🌠";
                 praiseText.style.color = "#00ff9d";
-                descText.innerText = "أدائك حلو بس الزعيم فلت منك! تحتاج تزيد رصيدك المعرفي للمواجهة القادمة.";
+                descText.innerText = "أدائك جيد، لكن تحتاج مراجعة بعض أساسيات منحنيات الناتج المتساوي.";
                 trophy.innerText = "☄️";
             } else {
-                praiseText.innerText = "ضائع في الثقب الأسود 🕳️🌑";
+                praiseText.innerText = "خسارة اقتصادية 🕳️🌑";
                 praiseText.style.color = "var(--damage-color)";
-                descText.innerText = "أدائك ضعيف والسفينة اتهشمت.. راجع معلوماتك العامة وارجع العب.";
+                descText.innerText = "الإيرادات ما غطت التكاليف والسفينة اتهشمت.. راجع الملزمة وارجع العب.";
                 trophy.innerText = "☠️";
                 playSound('explosion');
             }
